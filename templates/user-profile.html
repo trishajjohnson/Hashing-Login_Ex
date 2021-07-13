@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    {% block title %}
+    <h2 class="display-2 text-center">{{ user.username }}</h2>
+    {% endblock %}
+    <div class="text-center">
+        <p>Email: {{ user.email }}</p>
+        <p>Hi, my name is {{ user.first_name }}.  Welcome to my profile page!</p>
+    </div>
+    <form>
+        {% if session["username"] == user.username %}
+            <button formaction="/users/{{ user.username }}/delete" formmethod="POST" class="btn btn-danger">Delete Account</button>
+        {% endif %}
+    </form>
+    <div class="container justify-content-center">
+        <h3 class="text-center">Feedback</h3>
+        {% if session["username"] == user.username %}
+        <a class="btn btn-secondary" href="/users/{{ user.username }}/feedback/add">Add Feedback</a>
+        {% endif %}
+        <ul style="list-style: none;">
+            {% if user.feedback %}
+                {% for fb in user.feedback %}
+                <li>
+                    <div class="row justify-content-center">
+                        <div class="col-sm-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ fb.title }}</h5>
+                                    <p class="card-text">{{ fb.content }}</p>
+                                    <div>
+                                        <small class="text-right">{{ user.username }}</small>
+                                    </div>
+                                    {% if session["username"] == user.username %}
+                                        <a href="/feedback/{{ fb.id }}/update">Edit</a>
+                                        <form>
+                                            <button formaction="/feedback/{{ fb.id }}/delete" formmethod="POST" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            {% else %}
+                <p>This user has no feedback yet...</p>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
